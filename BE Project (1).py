@@ -974,6 +974,20 @@ print(arr)
 
 # In[76]:
 
+    def makeKeyR(p,q):
+        if len(str(p)) == 1:
+            return "0"+str(p)+str(q)
+        if len(str(q)) == 1:
+            return str(p)+"0"+str(q)
+        if len(str(p)) != 1 and len(str(q)) != 1:
+            return str(p)+str(q)        
+    def makeKeyD(a,b):
+        if len(str(a)) == 1:
+            return str(b)+"0"+str(a)
+        if len(str(b)) == 1:
+            return "0"+str(b)+str(a)
+        if len(str(a)) != 1 and len(str(b)) != 1:
+            return str(b)+str(a)
 
 cursor_of_drivers = db.driver_locations.find()
 countc = 1
@@ -1032,8 +1046,10 @@ while True:
             requests[i] = 0
     #print(requests)
     #print(drivers)
+    abc = {}
     for i in range(0,30):
         if requests[i] >=1:
+            inter_cluster_rank = {}
             latitude = cluster_centers[i][0]
             longitude = cluster_centers[i][1]
             for j in range(0,len(DC)):
@@ -1056,8 +1072,9 @@ while True:
                     if len(str(i)) != 1 and len(str(j)) != 1:
                         rank_R[str(i)+str(j)] = haversine
                         rank_D[str(j)+str(i)] = haversine
-                #print(str(i)+str(j))
-    abc = {k: v for k, v in sorted(rank_R.items(), key=lambda item: item[1])}
+                    inter_cluster_rank[makeKeyR(i,j)] = rank_R[makeKeyR(i,j)]
+            abc.update{k: v for k, v in sorted(inter_cluster_rank.items(), key=lambda item: item[1])}
+      
     pqr = {k: v for k, v in sorted(rank_D.items(), key=lambda item: item[1])}
     #print(pqr)
     #print(pqr.keys)
