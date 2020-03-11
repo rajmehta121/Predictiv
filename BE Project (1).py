@@ -1047,6 +1047,7 @@ while True:
     #print(requests)
     #print(drivers)
     abc = {}
+    pqr = {}
     for i in range(0,30):
         if requests[i] >=1:
             inter_cluster_rank = {}
@@ -1073,31 +1074,39 @@ while True:
                         rank_R[str(i)+str(j)] = haversine
                         rank_D[str(j)+str(i)] = haversine
                     inter_cluster_rank[makeKeyR(i,j)] = rank_R[makeKeyR(i,j)]
+                    inter_driver_rank[makeKeyD(i,j)] = rank_D[makeKeyD(i,j)]
             abc.update{k: v for k, v in sorted(inter_cluster_rank.items(), key=lambda item: item[1])}
-      
-    pqr = {k: v for k, v in sorted(rank_D.items(), key=lambda item: item[1])}
+            
+
+    for i in range(0,len(DC)):
+        inter_driver_rank = {}
+        for j in range(0,30):
+            inter_driver_rank[makeKeyR(j,i)] = rank_D[makeKeyD(j,i)]
+            pqr.update = {k: v for k, v in sorted(inter_driver_rank.items(), key=lambda item: item[1])}  
+    
     #print(pqr)
     #print(pqr.keys)
     list_values_R = [ v for v in abc.keys() ]
-    list_rank_R = [i for i in range(1,len(abc)+1)]
+    list_rank_R = [((i%len(DC))+1) for i in range(1,len(abc)+1)]
     ranked_dict_R = dict(zip(list_values_R, list_rank_R))
     list_values_D = [ v for v in pqr.keys() ]
-    list_rank_D = [i for i in range(1,len(pqr)+1)]
+    list_rank_D = [((i%30)+1) for i in range(1,len(pqr)+1)]
     ranked_dict_D = dict(zip(list_values_D,list_rank_D))
     #print(ranked_dict_D)
     count=0
     for i in range(0,30):
-        for j in range(0,len(DC)):
-            if (str(i)+str(j)) in ranked_dict_R and (str(j)+str(i)) in ranked_dict_D:
-                if len(str(i)) == 1:
-                    R= ranked_dict_R["0"+str(i)+str(j)] + ranked_dict_D[str(j)+"0"+str(i)]
-                    rank_table[str(i)+str(j)] = R
-                if len(str(j)) == 1:
-                    R= ranked_dict_R[str(i)+"0"+str(j)] + ranked_dict_D["0"+str(j)+str(i)]
-                    rank_table[str(i)+str(j)] = R
-                if len(str(i)) != 1 and len(str(j)) != 1:
-                    R= ranked_dict_R[str(i)+str(j)] + ranked_dict_D[str(j)+str(i)]
-                    rank_table[str(i)+str(j)] = R
+        if requests[i] >= 1:
+            for j in range(0,len(DC)):
+                if (str(i)+str(j)) in ranked_dict_R and (str(j)+str(i)) in ranked_dict_D:
+                    if len(str(i)) == 1:
+                        R = ranked_dict_R["0"+str(i)+str(j)] + ranked_dict_D[str(j)+"0"+str(i)]
+                        rank_table[str(i)+str(j)] = R
+                    if len(str(j)) == 1:
+                        R = ranked_dict_R[str(i)+"0"+str(j)] + ranked_dict_D["0"+str(j)+str(i)]
+                        rank_table[str(i)+str(j)] = R
+                    if len(str(i)) != 1 and len(str(j)) != 1:
+                        R = ranked_dict_R[str(i)+str(j)] + ranked_dict_D[str(j)+str(i)]
+                        rank_table[str(i)+str(j)] = R
     
     
     sorted_rank_table = {k: v for k, v in sorted(rank_table.items(), key=lambda item: item[1])}
